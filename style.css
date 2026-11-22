@@ -52,3 +52,14 @@ h1{font:normal clamp(80px,10vw,144px)/.78 'VT323','Courier New',monospace;letter
 .diamond-shop button{background:#243d58;border-color:#90deff}.diamond-shop strong,.diamond-shop small{color:#bcefff}
 
 .menu-info button.danger{border-color:#ed8074;color:#ffd5cb;background:#5a2c2b}.menu-info button.danger:hover{background:#783b36}
+
+/* Rarity affects cards only; weapon sprites and upgrade icons retain their art. */
+.upgrade-card.rarity-common{--rarity-bg:#35434a;--rarity-border:#b7c4ca;--rarity-ink:#eff4f6}
+.upgrade-card.rarity-uncommon{--rarity-bg:#214f38;--rarity-border:#7edc94;--rarity-ink:#d0ffda}
+.upgrade-card.rarity-rare{--rarity-bg:#234773;--rarity-border:#77beff;--rarity-ink:#d5ecff}
+.upgrade-card.rarity-epic{--rarity-bg:#513070;--rarity-border:#d7a1ff;--rarity-ink:#f1dcff}
+.upgrade-card[class*="rarity-"]:not(.max-weapon-card):not(.diamond-weapon-card){background:var(--rarity-bg);border-color:var(--rarity-border);box-shadow:6px 6px #081f20}
+.upgrade-card[class*="rarity-"]:not(.max-weapon-card):not(.diamond-weapon-card) :is(small,strong,span,b){color:var(--rarity-ink)}
+.upgrade-card[class*="rarity-"]:not(.max-weapon-card):not(.diamond-weapon-card) .upgrade-icon{background:#142729;border-color:var(--rarity-border)}
+.upgrade-card[class*="rarity-"]:hover,.upgrade-card[class*="rarity-"]:focus-visible{outline:2px solid var(--rarity-border);outline-offset:3px}
+.upgrade-card .rarity-label{font-size:15px;letter-spacing:1px}

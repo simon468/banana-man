@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {upgrades,freshBuild,draftUpgrades,applyUpgrade,stats,weapons,weaponLevel,weaponPower,upgradeCard} from './upgrades.js';
+import {rarities,upgrades,freshBuild,draftUpgrades,applyUpgrade,stats,weapons,weaponLevel,weaponPower,upgradeCard} from './upgrades.js';
 test('buffed stats stack without changing baseline or weapon ownership',()=>{
  const build=freshBuild();for(const id of ['haste','heart','shield','speed','dash','regen','knockback','heal'])applyUpgrade(build,id);
  const s=stats(build);assert.equal(s.rate,1.35);assert.equal(s.maxHealth,7);assert.equal(s.shields,2);assert.equal(s.speed,1.2);assert.equal(s.dashCooldown,1.3);assert.equal(s.regen,2);assert.equal(s.knockback,1.6);assert.deepEqual(weapons(build),['gun','rang']);
@@ -36,3 +36,10 @@ test('alternate starters can unlock the pistol and removed SMG is unavailable',(
 });
 
 test('Golden arsenal starts at five and takes exactly five upgrades to diamond',()=>{const b=freshBuild('gun',false,true);for(const id of weapons(b)){assert.equal(weaponLevel(b,id),5);for(let i=0;i<5;i++)assert(applyUpgrade(b,id));assert.equal(weaponLevel(b,id),10);assert.equal(applyUpgrade(b,id),false);}for(let i=0;i<30;i++)assert(draftUpgrades(b).every(u=>!u.weapon));assert.equal(weaponLevel(freshBuild(),'gun'),1);});
+
+test('rarity weights determine draws and rerolls stay distinct and eligible',()=>{
+ const b=freshBuild();const pool=upgrades.filter(u=>(b[u.id]||0)<u.max&&(!u.requires||b[u.requires]));const total=pool.reduce((sum,u)=>sum+rarities[u.rarity].weight,0);const counts={};
+ for(let i=0;i<total;i++){const d=draftUpgrades(b,()=> (i+.5)/total);counts[d[0].id]=(counts[d[0].id]||0)+1;assert.equal(new Set(d.map(u=>u.id)).size,3);}
+ for(const u of pool)assert.equal(counts[u.id],rarities[u.rarity].weight);
+ const old=draftUpgrades(b,()=>.5).map(u=>u.id);assert(draftUpgrades(b,()=>.5,old).every(u=>!old.includes(u.id)));
+});
