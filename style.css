@@ -63,3 +63,5 @@ h1{font:normal clamp(80px,10vw,144px)/.78 'VT323','Courier New',monospace;letter
 .upgrade-card[class*="rarity-"]:not(.max-weapon-card):not(.diamond-weapon-card) .upgrade-icon{background:#142729;border-color:var(--rarity-border)}
 .upgrade-card[class*="rarity-"]:hover,.upgrade-card[class*="rarity-"]:focus-visible{outline:2px solid var(--rarity-border);outline-offset:3px}
 .upgrade-card .rarity-label{font-size:15px;letter-spacing:1px}
+
+#tutorial-hint{position:absolute;top:150px;left:50%;transform:translateX(-50%);width:min(620px,85%);padding:14px 18px;background:#102e29ef;border:3px solid #ffda42;color:#fff3a1;text-align:center;font:22px/1.2 "VT323",monospace;pointer-events:none;z-index:5}#tutorial-hint[hidden]{display:none}

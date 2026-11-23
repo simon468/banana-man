@@ -82,7 +82,7 @@ test('wave clear pauses for exactly one choice; weapons, shields and reset work'
  run("start();remaining=1;spawnClock=100;enemyShots.push({x:350,y:200,vx:0,vy:0,life:4});bullets.push({x:340,y:200,vx:360,vy:0,life:1,angle:0,damage:1,radius:3,kind:'gun',hitEnemies:new Set()});update(.03)");assert.equal(run('enemyShots.length'),0);
  run("enemyShots.push({x:350,y:200,vx:0,vy:0,life:4});explodeBanana({x:350,y:200,damage:2})");assert.equal(run('enemyShots.length'),0);
 
- for(const bossWave of [10,20]){run('start();wave='+ (bossWave-1)+';rewardedWave=wave;remaining=0;waveDelay=0;update(.01)');assert.equal(run('enemies.length'),1);assert.equal(run('enemies[0].kind'),'boss');assert.equal(run('remaining'),0);assert.equal(run('mode'),'playing');run("damageEnemy(enemies[0],{damage:99999,vx:0,vy:0});update(.01)");assert.equal(run('mode'),'upgrade');assert.equal(run('coins'),5);}
+ for(const bossWave of [10,20]){run('start();wave='+ (bossWave-1)+';rewardedWave=wave;remaining=0;waveDelay=0;update(.01)');assert.equal(run('enemies.length'),1);assert.equal(run('enemies[0].kind'),'boss');assert.equal(run('remaining'),0);assert.equal(run('mode'),'playing');run("damageEnemy(enemies[0],{batted:true,damage:99999,vx:0,vy:0});update(.01)");assert.equal(run('mode'),'upgrade');assert.equal(run('coins'),5);}
 
  run("bossLoadout=['heavy','rail','catana'];startBoss()");assert.equal(run('wave'),10);assert.equal(run('weapon'),'heavy');assert.equal(run('selectableWeapons().length'),3);assert.equal(run('build.rang'),1);assert.equal(run('enemies.length'),1);assert.equal(run('enemies[0].kind'),'boss');assert.equal(run('remaining'),0);
  run("returnToMenu();bossLoadout=['gun'];startBoss()");assert.equal(run('mode'),'title');
@@ -94,6 +94,27 @@ test('wave clear pauses for exactly one choice; weapons, shields and reset work'
  run('updateBombnana(2);activateSecondary()');assert(run('!!bombnana'));run('start()');assert.equal(run('bombnana'),null);
  for(let i=0;i<20;i++)assert(run('draftUpgrades(build).every(u=>u.id!=="rang"&&u.id!=="pierce")'));
  run("selectedSecondary='rang';start();activateSecondary()");assert(run('!!rang'));assert.equal(run('build.bombnana'),undefined);
+
+ run("start();enemies.push(makeEnemy('coconut',350,200,1));damageEnemy(enemies[0],{kind:'gun',damage:1,vx:0,vy:0})");assert.equal(run('weaponUse.gun'),undefined);
+ run("damageEnemy(enemies[0],{kind:'catana',damage:1,vx:0,vy:0})");assert.equal(run('weaponUse.catana'),1);
+ run('start()');assert.equal(run('Object.keys(weaponUse).length'),0);
+
+ run("practiceBoss='banana';bossLoadout=['gun','catana','rail'];startBoss()");assert.equal(run('wave'),20);assert(['KING BANANA','CHERRY KING'].includes(run('enemies[0].name')));assert.equal(run('selectableWeapons().length'),3);
+ run("practiceBoss='melon';startBoss()");assert.equal(run('wave'),10);assert.equal(run('enemies[0].name'),'KING MELON');
+
+ run("start();enemies.push(makeEnemy('boss',350,200,20,true,0))");const cherryHp=run('enemies[0].hp');
+ for(const kind of ['gun','catana','bomber','bombnana','rang']){run("damageEnemy(enemies[0],{kind:'"+kind+"',damage:999,vx:1,vy:0})");assert.equal(run('enemies[0].hp'),cherryHp);}
+ run('damageEnemy(enemies[0],{truck:true,damage:99999,vx:1,vy:0})');assert.equal(run('enemies[0].hp'),cherryHp);
+ run("damageEnemy(enemies[0],{kind:'catana',batted:true,damage:10,vx:1,vy:0})");assert.equal(run('enemies[0].hp'),cherryHp-10);
+
+ run("practiceBoss='cherry';bossLoadout=['gun','catana','rail'];startBoss()");assert.equal(run('enemies[0].name'),'CHERRY KING');
+ run("practiceBoss='banana';startBoss()");assert.equal(run('enemies[0].name'),'KING BANANA');
+ run("returnToMenu();practiceBoss='cherry';bossLoadout=['gun','rail','heavy'];startBoss()");assert.equal(run('mode'),'title');
+
+ run("selectedSecondary='rang';startTutorial()");assert.equal(run('tutorial.step'),0);assert.equal(run('runActive'),false);run('player.x+=60;updateTutorial()');assert.equal(run('tutorial.step'),1);
+ run('dashing=.1;updateTutorial()');assert.equal(run('tutorial.step'),2);assert.equal(run('enemies[0].training'),true);
+ run("damageEnemy(enemies[0],{kind:'gun',damage:1,vx:0,vy:0});updateTutorial();selectWeapon('catana');updateTutorial()");assert.equal(run('tutorial.step'),4);
+ run("damageEnemy(enemies[0],{kind:'catana',damage:1,vx:0,vy:0});updateTutorial();activateSecondary();updateTutorial()");assert.equal(run('mode'),'tutorialDone');assert.equal(run('coins'),0);run('returnToMenu()');assert.equal(run('tutorial'),null);
 
 });
 
