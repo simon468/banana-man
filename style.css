@@ -65,3 +65,7 @@ h1{font:normal clamp(80px,10vw,144px)/.78 'VT323','Courier New',monospace;letter
 .upgrade-card .rarity-label{font-size:15px;letter-spacing:1px}
 
 #tutorial-hint{position:absolute;top:150px;left:50%;transform:translateX(-50%);width:min(620px,85%);padding:14px 18px;background:#102e29ef;border:3px solid #ffda42;color:#fff3a1;text-align:center;font:22px/1.2 "VT323",monospace;pointer-events:none;z-index:5}#tutorial-hint[hidden]{display:none}
+
+#intro-message{width:min(680px,85vw);text-align:center;font:clamp(18px,3vw,28px)/1.6 monospace;padding:24px}#intro-message[hidden]{display:none}#intro-message p{margin:0;color:#fff}#intro .intro-prompt{margin-top:36px;font-size:clamp(14px,2vw,18px);letter-spacing:2px;color:#ffda42}
+
+#intro-logo{text-align:center;padding:24px}#intro-logo[hidden]{display:none}#intro-logo h1{font-size:clamp(76px,16vw,160px);line-height:.8;margin:24px 0;color:#fff4da;text-shadow:5px 5px #786022}#intro-logo h1 em{color:#ffda42}#intro-logo .logo-peel{color:#ffda42;letter-spacing:6px;font:18px monospace}#intro-logo .logo-tagline{color:#fff4da;font:clamp(12px,2vw,18px) monospace;letter-spacing:2px}.logo-pop{animation:logo-pop .3s ease-out both}@keyframes logo-pop{0%{opacity:0;transform:scale(.65) rotate(-5deg)}75%{opacity:1;transform:scale(1.06) rotate(1deg)}100%{opacity:1;transform:scale(1) rotate(0)}}@media(prefers-reduced-motion:reduce){.logo-pop{animation:none}}

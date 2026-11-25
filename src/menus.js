@@ -43,6 +43,6 @@ export function createMenus({panel,getState,actions}) {
     });
     panel.querySelector(confirmation?'[data-action="cancel"]':section==='home'?'.primary':'[aria-current]')?.focus();
   }
-  return {show,hide(){panel.hidden=true;panel.classList.remove('menu-screen');},escape(){settingsClicks=0;if(screen==='pause'){if(confirmation||section!=='home'){confirmation=null;section='home';render();}else actions.resume();}else if(confirmation){confirmation=null;render();}else if(section!=='home'){section='home';render();}}};
+  return {musicScene(){return section==='home'?(screen==='pause'?'pause':'title'):section;},show,hide(){panel.hidden=true;panel.classList.remove('menu-screen');},escape(){settingsClicks=0;if(screen==='pause'){if(confirmation||section!=='home'){confirmation=null;section='home';render();}else actions.resume();}else if(confirmation){confirmation=null;render();}else if(section!=='home'){section='home';render();}}};
 }
 

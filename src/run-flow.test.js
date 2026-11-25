@@ -19,6 +19,27 @@ test('wave clear pauses for exactly one choice; weapons, shields and reset work'
  const sandbox={...permanentTools,createUpgradeSprites,...catanaTools,...phoneTools,enemyKind,makeEnemy,stepEnemy,enemyPixels,specialists,coinDropChance,enemyPalette,guns,gunVolley,createWeaponSprites,createMenus,renderBuildIcons,...progression,...boomerang,document,innerWidth:1280,innerHeight:800,addEventListener(){},matchMedia:()=>({matches:false}),performance:{now:()=>0},requestAnimationFrame(){},localStorage:{getItem:()=>null,setItem(){}},createFunkTrack(){},console};
  vm.createContext(sandbox);vm.runInContext(fs.readFileSync(new URL('./game.js',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,''),sandbox);
  const run=code=>vm.runInContext(code,sandbox);
+ assert.equal(run('mode'),'intro');
+ run('frame(0);continueIntro()');assert.equal(run('mode'),'intro');
+ run('frame(500)');assert.equal(elements.get('intro-message').style.opacity,'0.5');assert.equal(run('introReady'),false);
+ run('frame(999)');assert.equal(run('introReady'),false);
+ run('frame(1000)');assert.equal(run('introReady'),true);assert.equal(elements.get('intro-message').hidden,false);
+ run('continueIntro()');assert.equal(run('mode'),'intro');assert.equal(run('introStage'),'logo');assert.equal(elements.get('intro-message').hidden,true);assert.equal(elements.get('intro-logo').hidden,false);
+ run('continueIntro();frame(1100);frame(1399)');assert.equal(run('introReady'),false);
+ run('frame(1400);continueIntro()');assert.equal(run('mode'),'tutorialPrompt');assert.equal(elements.get('intro').style.display,'none');assert.equal(elements.get('game').inert,false);assert.equal(elements.get('overlay').hidden,false);
+ elements.get('tutorial-no').onclick();assert.equal(run('mode'),'title');assert.equal(run('tutorial'),null);
+ run('sound=false;showTutorialPrompt()');elements.get('tutorial-yes').onclick();assert.equal(run('mode'),'playing');assert.equal(run('tutorial.step'),0);assert.equal(run('runActive'),false);
+ run('returnToMenu();sound=true');
+ run('musicTrack={setPlaying(value){this.playing=value;}}');
+ for(const screen of ['title','playing','paused','upgrade','over','tutorialDone']){run('mode='+JSON.stringify(screen)+';syncMusic()');assert.equal(run('musicTrack.playing'),true);}
+ run("mode='intro';introStage='disclaimer';syncMusic()");assert.equal(run('musicTrack.playing'),false);
+ run("introStage='logo';syncMusic()");assert.equal(run('musicTrack.playing'),false);
+ run("mode='title';musicStartAt=.65;audioContext={currentTime:.64};syncMusic()");assert.equal(run('musicTrack.playing'),false);
+ run('audioContext.currentTime=.65;syncMusic()');assert.equal(run('musicTrack.playing'),true);
+ run('audioContext=undefined;musicStartAt=0');
+ run('musicEnabled=false;syncMusic()');assert.equal(run('musicTrack.playing'),false);
+ run('musicEnabled=true;document.hidden=true;syncMusic()');assert.equal(run('musicTrack.playing'),false);
+ run('document.hidden=false;sound=false;syncMusic()');assert.equal(run('musicTrack.playing'),false);
  run("sound=false;start();update(.6)");assert.equal(run('wave'),1);assert.equal(run('mode'),'playing');
  run('score=300;pause()');assert.equal(run('mode'),'paused');const frozen=run('enemies[0].x');run('update(1)');assert.equal(run('enemies[0].x'),frozen);run('resume()');assert.equal(run('mode'),'playing');assert.equal(run('score'),300);
  run('remaining=0;enemies.length=0;update(.01)');assert.equal(run('mode'),'upgrade');assert.equal(run('draft.length'),3);
